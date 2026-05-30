@@ -11,6 +11,7 @@ export const manifest = setupManifest({
   donationUrl: null,
   description: { short, long },
   volumes: ['main'],
+  // Forgejo's upstream image publishes x86_64 + aarch64 only (no riscv64, unlike Gitea).
   images: {
     forgejo: {
       source: {

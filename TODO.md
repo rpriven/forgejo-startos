@@ -27,8 +27,17 @@ kernel (→ empty mount → "not found"), even though the host's `unsquashfs` re
 ### Next diagnostics / fixes (in order)
 1. ✅ **Isolating test DONE (2026-05-29):** installed **Tor** from the Start9 marketplace on the VM — it
    installs + runs (health green). CONFIRMS: StartOS is fine; the `index.js not found` is OUR local build.
-2. **Build via Start9 CI:** push to a GitHub fork; let `.github/workflows/build.yml` (shared-workflows) build
-   the `.s9pk` in their controlled env; sideload that. If it installs → it was our local tar2sqfs/squashfs.
+2. **Build via Start9 CI** — IN PROGRESS (2026-05-29):
+   - ✅ Repo live (PRIVATE): `github.com/rpriven/forgejo-startos`, our conversion committed + pushed to master.
+   - ✅ `DEV_KEY` repo secret set (from `~/.startos/developer.key.pem`).
+   - ⏳ Need to trigger **`build.yml`** (builds .s9pk + uploads per-arch artifacts). It triggers on `pull_request`
+     to master (or workflow_dispatch). On the fresh repo, `workflow_dispatch`/`gh workflow run build.yml` 404s
+     (not registered yet). **Reliable trigger: open a PR** — e.g. branch off master, make any non-`.md` change,
+     PR it → build.yml runs the full build → `gh run download` the artifacts → sideload to the VM.
+   - NOTE: `tagAndRelease.yml` auto-ran on push and FAILED at "Check production registry" — that's Start9's
+     release-to-prod flow (checks THEIR registry); irrelevant to us, ignore. CI env itself works (got through
+     install start-cli + extract version before that check).
+   - Goal: if the CI-built x86_64 .s9pk installs cleanly → confirms `index.js` was our local build env.
 3. Compare our `tar2sqfs` version/flags vs what start-cli/their CI expects.
 4. Lurk/search Start9 `#community-dev` Matrix for "index.js not found"; ask only if unresolved.
 
